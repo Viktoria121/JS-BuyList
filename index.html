@@ -2,15 +2,88 @@
 <html>
 <head lang="uk">
     <meta charset="UTF-8">
-    <title>My Page</title>
-
-
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошик покупок</title>
     <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
-<body>
-	<span class="product-item">
-		Apple
-		<span class="amount">4</span>
-	</span>
-</body>
+	<body>
+		<div class="main-first-items">
+
+			<div class="product-adding-item" >
+				<input type="text" placeholder="Назва товару">
+				<button type="submit" data-tooltip="Кнопка для додавання нового товару">Додати</button>
+			</div>
+
+			<div class="first-table-items">
+				<input type="text" class="product" id="thickness" placeholder="Помідори">
+				<span class="add-or-sub">
+					<span class="count">2</span>
+				</span>
+				<span class="buy-or-cancel">
+					<button class="buy" data-tooltip="Ви придбали цей товар">Куплено</button>
+				</span>
+
+			</div>
+
+			<div class="first-table-items">
+				<input type="text" class="product" placeholder="Печиво">
+				<span class="add-or-sub">
+					<button class="subtraction" data-tooltip="Зменшити кількість">–</button>
+					<span class="count">2</span>
+					<button class="adding" data-tooltip="Збільшити кількість">+</button>
+				</span>
+
+				<span class="buy-or-cancel">
+					<button class="buy" data-tooltip="Придбати цей товар">Купити</button>
+					<button class="cancel-button" data-tooltip="Видалити товар із списку">×</button>
+				</span>
+			</div>
+
+			<div class="first-table-items">
+				<input type="text" class="product" placeholder="Сир">
+				<span class="add-or-sub">
+					<button class="subtraction" id="only-one" data-tooltip="Кількість не може бути менше 1">–</button>
+					<span class="count">1</span>
+					<button class="adding" data-tooltip="Збільшити кількість">+</button>
+				</span>
+
+				<span class="buy-or-cancel">
+					<button class="buy" data-tooltip="Придбати цей товар">Купити</button>
+					<button class="cancel-button" data-tooltip="Видалити товар із списку">×</button>
+				</span>
+			</div>
+		</div>
+
+		<div class="main-second-items">
+			<h1>Залишилося</h1>
+				<span class="need-to-buy">
+					<span class="product-name">
+						Печиво
+						<span class="amount">2</span>
+					</span>
+					<span class="product-name">
+						Сир
+						<span class="amount">1</span>
+					</span>
+				</span>
+
+			<h1>Куплено</h1>
+				<span class="bought">
+					<span class="product-name" id="thickness">
+						Помідори
+						<span class="amount" id="thickness">2</span>
+					</span>
+				</span>
+		</div>
+
+		<div class="buyList">
+			<div class="badge">
+				<div class="badge-title">Buy List</div>
+				<div class="badge-author">Created by: <br>
+					<p id="autor-name">Perets Viktoria</p>
+				</div>
+			</div>
+		</div>
+
+	</body>
 </html>
