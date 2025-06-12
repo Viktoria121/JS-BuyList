@@ -151,7 +151,7 @@ body {
 	transition: all 0.3s ease;
 }
 
-#thickness{
+.product[data-bought="true"]{
 	text-decoration: line-through;
 	text-decoration-thickness: 2px;
 }
@@ -294,9 +294,9 @@ h1{
 
 @media print{
 	.badge{
-		background-color: white !important;
+		background-color: white;
 		color:  rgb(91, 44, 221);
-		border:  2px solid rgb(91, 44, 221) !important;
+		border:  2px solid rgb(91, 44, 221);
 		height: 60px;
 	}
 

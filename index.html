@@ -16,19 +16,21 @@
 			</div>
 
 			<div class="first-table-items">
-				<input type="text" class="product" id="thickness" placeholder="Помідори">
+				<input type="text" class="product" value="Помідори" data-bought="true">
 				<span class="add-or-sub">
+					<button class="subtraction" data-tooltip="Зменшити кількість">–</button>
 					<span class="count">2</span>
+					<button class="adding" data-tooltip="Збільшити кількість">+</button>
 				</span>
 				<span class="buy-or-cancel">
 					<button class="buy" data-tooltip="Ви придбали цей товар">Скасувати купівлю</button>
-
+					<button class="cancel-button" data-tooltip="Видалити товар із списку">×</button>
 				</span>
 
 			</div>
 
 			<div class="first-table-items">
-				<input type="text" class="product" placeholder="Печиво">
+				<input type="text" class="product" value="Печиво" data-bought="false">
 				<span class="add-or-sub">
 					<button class="subtraction" data-tooltip="Зменшити кількість">–</button>
 					<span class="count">2</span>
@@ -42,7 +44,7 @@
 			</div>
 
 			<div class="first-table-items">
-				<input type="text" class="product" placeholder="Сир">
+				<input type="text" class="product" value="Сир" data-bought="false">
 				<span class="add-or-sub">
 					<button class="subtraction" id="only-one" data-tooltip="Кількість не може бути менше 1">–</button>
 					<span class="count">1</span>

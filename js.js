@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	const statsNeed = document.querySelector(".need-to-buy");
 	const statsBought = document.querySelector(".bought");
 
-	// Додає функціонал до одного елемента продукту
 	function setupProduct(item) {
 		const nameInput = item.querySelector(".product");
 		let countDisplay = item.querySelector(".count");
@@ -15,163 +14,96 @@ document.addEventListener("DOMContentLoaded", () => {
 		const buyBtn = item.querySelector(".buy");
 		const cancelBtn = item.querySelector(".cancel-button");
 
-        nameInput.value = nameInput.placeholder;
-        if(nameInput.id){nameInput.readOnly = true;}
+		// Заборонити редагування, якщо куплено
+		if (nameInput.dataset.bought === "true") {
+			nameInput.readOnly = true;
+			//nameInput.classList.add("crossed");
+		}
 
 		if (subBtn) {
 			subBtn.addEventListener("click", () => {
 				if (count > 1) {
 					count--;
 					countDisplay.textContent = count;
-					updateStats();
 					if (count === 1) {
 						subBtn.disabled = true;
 						subBtn.id = "only-one";
 					}
+					updateCountProduct(nameInput.value.trim());
 				}
 			});
-			if (count === 1) {
-				subBtn.disabled = true;
-				subBtn.id = "only-one";
-			}
 		}
 
 		if (addBtn) {
+			if(nameInput.dataset.bought === "true"){
+				const addOrSub = item.querySelector(".add-or-sub");
+				addOrSub.innerHTML = "";
+				const newCount = document.createElement("span");
+				newCount.className = "count";
+				newCount.textContent = count;
+				addOrSub.append(newCount);
+				countDisplay = newCount;
+			}
 			addBtn.addEventListener("click", () => {
 				count++;
 				countDisplay.textContent = count;
-				if (subBtn) {
+				if (subBtn.disabled = true) {
 					subBtn.disabled = false;
 					subBtn.removeAttribute("id");
-                    updateStats();
 				}
+				updateCountProduct(nameInput.value.trim());
 			});
 		}
 
 		if (buyBtn) {
-        buyBtn.addEventListener("click", () => {
-            isBuying = buyBtn.textContent === "Купити";
+			buyBtn.addEventListener("click", () => {
 
-            if (isBuying) {
-                // Позначаємо товар як куплений
-                nameInput.classList.add("crossed");
-                nameInput.readOnly = true;
-                nameInput.id = "thickness";
+				if (nameInput.dataset.bought === "false") {
+					// Позначити як куплено
+					nameInput.dataset.bought = "true";
+					nameInput.readOnly = true;
+					nameInput.classList.add("crossed");
 
-                const subBtn = item.querySelector(".subtraction");
-                const addBtn = item.querySelector(".adding");
-                // Заміна кнопок +/- на просто число
-                if ((subBtn && addBtn) ) {
-                    const span = document.createElement("span");
-                    span.className = "count";
-                    span.textContent = count;
+					// Заміна +/- на просто лічильник
+					const addOrSub = item.querySelector(".add-or-sub");
+					addOrSub.innerHTML = "";
+					addOrSub.append(countDisplay);
 
-                    item.querySelector(".add-or-sub").innerHTML = "";
-                    item.querySelector(".add-or-sub").append(span);
-                }
+					// Заміна кнопок на одну
+					const actions = item.querySelector(".buy-or-cancel");
+					actions.innerHTML = "";
+					buyBtn.textContent = "Скасувати купівлю";
+					buyBtn.setAttribute("data-tooltip", "Ви придбали цей товар");
+					actions.append(buyBtn);
+				} 
+				else {
+					// Позначити як не куплено
+					nameInput.dataset.bought = "false";
+					nameInput.readOnly = false;
+					nameInput.classList.remove("crossed");
 
-                // Заміна кнопок дій: тільки кнопка "Скасувати купівлю"
-                const actions = item.querySelector(".buy-or-cancel");
-                if (actions) {
-                    actions.innerHTML = "";
-                    actions.append(buyBtn);
-                }
-                buyBtn.textContent = "Скасувати купівлю";
+					// Відновлення +/- кнопок
+					const addOrSub = item.querySelector(".add-or-sub");
+					addOrSub.innerHTML = "";
+					addOrSub.append(subBtn, countDisplay, addBtn);
 
-            } else {
-                // Повертаємо до стану "не куплено"
-                nameInput.classList.remove("crossed");
-                nameInput.readOnly = false;
-                nameInput.removeAttribute("id");
-
-                // Відновлюємо кнопки +/- та лічильник
-                const addOrSub = item.querySelector(".add-or-sub");
-                if (addOrSub) {
-                    let newSubBtn = item.querySelector(".subtraction");
-                    let newAddBtn = item.querySelector(".adding");
-
-                    addOrSub.innerHTML = "";
-
-                    if (newSubBtn && newAddBtn && countDisplay) {
-                        // Якщо кнопки вже є в DOM — використовуємо їх
-                        addOrSub.append(newSubBtn, countDisplay, newAddBtn);
-                    } else {
-                        
-                        nameInput.readOnly="true";
-                        // Якщо немає — створюємо кнопки
-
-                        if (!newSubBtn) {
-                            newSubBtn = document.createElement("button");
-                            newSubBtn.className = "subtraction";
-                            newSubBtn.textContent = "–";
-                            newSubBtn.title = "Зменшити кількість";
-                            if(countDisplay.textContent === "1") newSubBtn.id = "only-one";
-                            newSubBtn.addEventListener("click", () => {
-                                if (count > 1) {
-                                    count--;
-                                    countDisplay.textContent = count;
-                                    updateStats();
-                                    if (count === 1) {
-                                        newSubBtn.disabled = true;
-                                        newSubBtn.id = "only-one";
-                                    }
-                                }
-                            });
-
-                        }
-
-                        if (!newAddBtn) {
-                            newAddBtn = document.createElement("button");
-                            newAddBtn.className = "adding";
-                            newAddBtn.textContent = "+";
-                            newAddBtn.title = "Збільшити кількість";
-                            newAddBtn.addEventListener("click", () => {
-                                count++;
-                                countDisplay.textContent = count;
-                                if (newSubBtn) {
-                                    newSubBtn.disabled = false;
-                                    newSubBtn.removeAttribute("id");
-                                    updateStats();
-                                }
-                            });
-                        }
-
-                        // Додаємо елементи до DOM
-                        addOrSub.append(newSubBtn, countDisplay, newAddBtn);
-                    }
-                }
-
-
-                // Повертаємо кнопку видалення
-                const actions = item.querySelector(".buy-or-cancel");
-                if (actions) {
-                    let newCancelBtn = item.querySelector(".cancel-button");
-                    actions.innerHTML = "";
-                    if(newCancelBtn){
-                        actions.append(buyBtn, cancelBtn);
-                    }
-                    
-                    if (!newCancelBtn) {
-                        newCancelBtn = document.createElement("button");
-                        newCancelBtn.className = "cancel-button";
-                        newCancelBtn.textContent = "×";
-
-                        newCancelBtn.addEventListener("click", () => {
-                            item.remove();
-                            updateStats();
-                        });
-                    }
-                    actions.append(buyBtn, newCancelBtn);
-                }
-                buyBtn.textContent = "Купити";
-            }
-
-            updateStats();
-        });
-    }
-
+					// Відновлення кнопки "×"
+					const actions = item.querySelector(".buy-or-cancel");
+					actions.innerHTML = "";
+					buyBtn.textContent = "Купити";
+					actions.append(buyBtn, cancelBtn);
+					buyBtn.setAttribute("data-tooltip", "Придбати цей товар");
+				}
+				updateStats();
+			});
+		}
 
 		if (cancelBtn) {
+			if(nameInput.dataset.bought === "true"){
+				const actions = item.querySelector(".buy-or-cancel");
+				actions.innerHTML = "";
+				actions.append(buyBtn); 
+			}
 			cancelBtn.addEventListener("click", () => {
 				item.remove();
 				updateStats();
@@ -179,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 
 		nameInput.addEventListener("click", () => {
-			if (!nameInput.classList.contains("crossed")) {
+			if (nameInput.dataset.bought === "false") {
 				nameInput.readOnly = false;
 			}
 		});
@@ -190,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// Створює новий продукт і додає до списку
 	function createProduct(name, count = 1) {
 		const item = document.createElement("div");
 		item.className = "first-table-items";
@@ -198,8 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		const nameInput = document.createElement("input");
 		nameInput.type = "text";
 		nameInput.className = "product";
-        nameInput.placeholder = name;
 		nameInput.value = name;
+		nameInput.dataset.bought = "false";
 
 		const countContainer = document.createElement("span");
 		countContainer.className = "add-or-sub";
@@ -211,12 +142,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		const subBtn = document.createElement("button");
 		subBtn.className = "subtraction";
 		subBtn.textContent = "–";
-		subBtn.title = "Зменшити кількість";
+		subBtn.setAttribute("data-tooltip", "Зменшити кількість");
+		subBtn.id = "only-one";
 
 		const addBtn = document.createElement("button");
 		addBtn.className = "adding";
 		addBtn.textContent = "+";
-		addBtn.title = "Збільшити кількість";
+		addBtn.setAttribute ("data-tooltip", "Збільшити кількість");
 
 		countContainer.append(subBtn, countDisplay, addBtn);
 
@@ -226,10 +158,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		const buyBtn = document.createElement("button");
 		buyBtn.className = "buy";
 		buyBtn.textContent = "Купити";
+		buyBtn.setAttribute("data-tooltip", "Придбати цей товар");
 
 		const cancelBtn = document.createElement("button");
 		cancelBtn.className = "cancel-button";
 		cancelBtn.textContent = "×";
+		buyBtn.setAttribute("data-tooltip", "Видалити товар із списку");
 
 		actionContainer.append(buyBtn, cancelBtn);
 
@@ -240,25 +174,25 @@ document.addEventListener("DOMContentLoaded", () => {
 		updateStats();
 	}
 
-	// Оновлює список куплених / некуплених
 	function updateStats() {
 		statsNeed.innerHTML = "";
 		statsBought.innerHTML = "";
 
 		document.querySelectorAll(".first-table-items").forEach(item => {
-			const name = item.querySelector(".product").value.trim();
+			const nameInput = item.querySelector(".product");
+			const name = nameInput.value.trim();
 			const count = parseInt(item.querySelector(".count").textContent);
-			const isBought = item.querySelector(".product").id
+			const isBought = nameInput.dataset.bought === "true";
 
 			const statItem = document.createElement("span");
-            statItem.className = "product-name";
+			statItem.className = "product-name";
 
-            const amountSpan = document.createElement("span");
-            amountSpan.className = "amount";
-            amountSpan.textContent = count;
+			const amountSpan = document.createElement("span");
+			amountSpan.className = "amount";
+			amountSpan.textContent = count;
 
-            statItem.textContent = name + " ";
-            statItem.appendChild(amountSpan);
+			statItem.textContent = name + " ";
+			statItem.appendChild(amountSpan);
 
 			if (isBought) {
 				statsBought.append(statItem);
@@ -268,7 +202,30 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// Обробка кнопки додавання
+	function updateCountProduct(name) {
+		document.querySelectorAll(".first-table-items").forEach(item => {
+			const nameInput = item.querySelector(".product");
+			const productName = nameInput.value.trim();
+
+			if (productName === name) {
+				const count = item.querySelector(".count").textContent;
+				const statItems = document.querySelectorAll(
+					`.${nameInput.dataset.bought === "true" ? "bought" : "need-to-buy"} .product-name`
+				);
+
+				statItems.forEach(statItem => {
+					const statName = statItem.childNodes[0].nodeValue.trim();
+					if (statName === name) {
+						const amountSpan = statItem.querySelector(".amount");
+						if (amountSpan) {
+							amountSpan.textContent = count;
+						}
+					}
+				});
+			}
+		});
+	}
+
 	addBtn.addEventListener("click", () => {
 		const value = input.value.trim();
 		if (value !== "") {
@@ -278,14 +235,19 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 
-	// Enter додає товар
 	input.addEventListener("keypress", e => {
 		if (e.key === "Enter") {
 			addBtn.click();
 		}
 	});
 
-	// Підключити логіку до вже існуючих елементів у HTML
-	document.querySelectorAll(".first-table-items").forEach(setupProduct);
+	document.querySelectorAll(".first-table-items").forEach(item => {
+		const nameInput = item.querySelector(".product");
+		if (!nameInput.dataset.bought) {
+			nameInput.dataset.bought = "false";
+		}
+		setupProduct(item);
+	});
+
 	updateStats();
 });
